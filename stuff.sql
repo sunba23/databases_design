@@ -1,3 +1,4 @@
+-- Active: 1698611357468@@127.0.0.1@5432@postgres
 -- VehicleType Table
 CREATE TABLE VehicleType (
     VehicleTypeID SERIAL PRIMARY KEY,
@@ -79,9 +80,8 @@ CREATE TABLE Journey (
 -- Course Table
 CREATE TABLE Course (
     CourseID SERIAL PRIMARY KEY,
-    CourseNumber INT NOT NULL UNIQUE,
-
-    CHECK (CourseNumber > 0),
+    LineID FOREIGN KEY REFERENCES Line(LineID) ON DELETE CASCADE,
+    VehicleID FOREIGN KEY REFERENCES Vehicle(VehicleID) ON DELETE CASCADE,
 );
 
 -- Route Table
