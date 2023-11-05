@@ -22,7 +22,7 @@ fake = Faker()
 conn.autocommit = True
 
 # # # Create tables
-# cur.execute("INSERT INTO information_schema.\"UserType\" (Name) VALUES (%s);", ('Admin',))
+# cur.execute("INSERT INTO \"UserType\" (Name) VALUES (%s);", ('Admin',))
 # Insert data into the tables
 
 vehicle_types = ['Metro', 'Bus', 'Tram']
@@ -37,8 +37,8 @@ stopsNumber = 6000
 lineNumber = 200
 scheduleNumber = 50000
 userNumber = 10000
-ticketNumber = 10000
-journeyNumber = 10000
+ticketNumber = 100000000
+journeyNumber = 100000000
 
 random.shuffle(vehicle_types)
 random.shuffle(user_type)
@@ -52,33 +52,33 @@ tables_to_clear = ["\"Vehicle\"", "\"User\"", "\"UserType\"", "\"Carriers\"", "\
 
 for table_name in tables_to_clear:
     # Use the DELETE statement to clear the table
-    delete_query = f"DELETE FROM information_schema.{table_name};"
+    delete_query = f"DELETE FROM {table_name};"
     cur.execute(delete_query)
 
 print("Cleared the tables")
 i=0
 for vehicle_type in vehicle_types:
-    cur.execute("INSERT INTO information_schema.\"VehicleType\" (VehicleTypeID, Name) VALUES (%s,%s);", ( i+1,vehicle_type))
+    cur.execute("INSERT INTO \"VehicleType\" (VehicleTypeID, Name) VALUES (%s,%s);", ( i+1,vehicle_type))
     i+=1
 print("VehicleTypes added")
 i=0
 for user in user_type:
-    cur.execute("INSERT INTO information_schema.\"UserType\" (UserTypeID,Name) VALUES (%s,%s);", (i+1,user))
+    cur.execute("INSERT INTO \"UserType\" (UserTypeID,Name) VALUES (%s,%s);", (i+1,user))
     i+=1
 print("UserTypes added")
 i=0
 for carrier in carriers:
-    cur.execute("INSERT INTO information_schema.\"Carriers\" (CarrierID,Name) VALUES (%s,%s);", (i+1,carrier))
+    cur.execute("INSERT INTO \"Carriers\" (CarrierID,Name) VALUES (%s,%s);", (i+1,carrier))
     i+=1
 print("Carriers added")
 i=0
 for amenity in amenities:
-    cur.execute("INSERT INTO information_schema.\"Amenities\" (AmenityID,Name) VALUES (%s,%s);", (i+1,amenity))
+    cur.execute("INSERT INTO \"Amenities\" (AmenityID,Name) VALUES (%s,%s);", (i+1,amenity))
     i+=1
 print("Amenities added")
 i=0
 for obstacle in obstacles:
-    cur.execute("INSERT INTO information_schema.\"Obstacles\" (ObstacleID,Description) VALUES (%s,%s);", (i+1,obstacle))
+    cur.execute("INSERT INTO \"Obstacles\" (ObstacleID,Description) VALUES (%s,%s);", (i+1,obstacle))
     i+=1
 print("Obstacles added")
 
@@ -87,13 +87,13 @@ print("Obstacles added")
 for _ in range(vehicleNumber):
     license_plate = fake.license_plate()
     vehicle_type_id = randint(1, 3)
-    cur.execute("INSERT INTO information_schema.\"Vehicle\" (VehicleID,RegistrationNumber, VehicleTypeID) VALUES (%s, %s, %s);", (_+1,license_plate+str(randint(1,100)+_), vehicle_type_id))
-    cur.execute("INSERT INTO information_schema.\"CarrierVehicle\" (CarrierID, VehicleID) VALUES ( %s, %s);", ( randint(1, len(carriers)),_+1 ))
-    cur.execute("INSERT INTO information_schema.\"VehicleAmenity\" (VehicleID, AmenityID) VALUES ( %s, %s);", ( _+1, randint(1, len(amenities))))
+    cur.execute("INSERT INTO \"Vehicle\" (VehicleID,RegistrationNumber, VehicleTypeID) VALUES (%s, %s, %s);", (_+1,license_plate+str(randint(1,100)+_), vehicle_type_id))
+    cur.execute("INSERT INTO \"CarrierVehicle\" (CarrierID, VehicleID) VALUES ( %s, %s);", ( randint(1, len(carriers)),_+1 ))
+    cur.execute("INSERT INTO \"VehicleAmenity\" (VehicleID, AmenityID) VALUES ( %s, %s);", ( _+1, randint(1, len(amenities))))
 
 
 for _ in range(6000):
-    cur.execute('INSERT INTO information_schema.\"Stop\" (StopID,Name) VALUES (%s,%s);', (_+1,fake.street_name() + " " + fake.street_suffix() +" "+str(randint(1,37))))
+    cur.execute('INSERT INTO \"Stop\" (StopID,Name) VALUES (%s,%s);', (_+1,fake.street_name() + " " + fake.street_suffix() +" "+str(randint(1,37))))
 
 for _ in range (userNumber):
 
@@ -101,7 +101,7 @@ for _ in range (userNumber):
     email = email[0] + str(_) + "@" + email[1]
 
     username = fake.user_name() + str(_)
-    cur.execute("INSERT INTO information_schema.\"User\" (UserID,Username,Password,Email,CreatedAt,UserTypeID) VALUES (%s,%s,%s,%s,%s,%s);", (_+1,username,fake.password(),email,fake.date_time_between(start_date='-5y', end_date='now'),randint(1,len(user_type))))
+    cur.execute("INSERT INTO \"User\" (UserID,Username,Password,Email,CreatedAt,UserTypeID) VALUES (%s,%s,%s,%s,%s,%s);", (_+1,username,fake.password(),email,fake.date_time_between(start_date='-5y', end_date='now'),randint(1,len(user_type))))
 
 lineList = []
 for _ in range (200):
@@ -110,22 +110,22 @@ for _ in range (200):
 random.shuffle(lineList)
 
 for _ in range(lineNumber):
-    cur.execute("INSERT INTO information_schema.\"Line\" (LineID,LineNumber) VALUES (%s,%s);", (_+1,random.choice(lineList)))
+    cur.execute("INSERT INTO \"Line\" (LineID,LineNumber) VALUES (%s,%s);", (_+1,random.choice(lineList)))
 print("Lines added")
 for _ in range(routeNumber):
-    cur.execute("INSERT INTO information_schema.\"Route\" (RouteID,Name,Description) VALUES (%s,%s,%s);", (_+1,fake.city() + fake.city(),fake.sentence()))
+    cur.execute("INSERT INTO \"Route\" (RouteID,Name,Description) VALUES (%s,%s,%s);", (_+1,fake.city() + fake.city(),fake.sentence()))
 print("Routes added")
 for _ in range (4000):
-    cur.execute("INSERT INTO information_schema.\"Course\" (CourseID, VehicleID,LineID) VALUES (%s, %s,%s);", (_+1, randint(1, vehicleNumber),randint(1,len(lineList))))
+    cur.execute("INSERT INTO \"Course\" (CourseID, VehicleID,LineID) VALUES (%s, %s,%s);", (_+1, randint(1, vehicleNumber),randint(1,len(lineList))))
 print("Courses added")
 for _ in range (300):
-    cur.execute("INSERT INTO information_schema.\"RouteObstacles\" (RouteObstacleID,RouteID,ObstacleID) VALUES (%s,%s,%s);" ,(_+1,randint(1,routeNumber),randint(1,len(obstacles))))
+    cur.execute("INSERT INTO \"RouteObstacles\" (RouteObstacleID,RouteID,ObstacleID) VALUES (%s,%s,%s);" ,(_+1,randint(1,routeNumber),randint(1,len(obstacles))))
 print("RouteObstacles added")
 for _ in range(10000):
-    cur.execute("INSERT INTO information_schema.\"RouteStops\" (RouteStopID,RouteID,StopID) VALUES (%s,%s,%s);" ,(_+1,randint(1,routeNumber),randint(1,stopsNumber)))
+    cur.execute("INSERT INTO \"RouteStops\" (RouteStopID,RouteID,StopID) VALUES (%s,%s,%s);" ,(_+1,randint(1,routeNumber),randint(1,stopsNumber)))
 print("RouteStops added")
 for _ in range(800):
-    cur.execute("INSERT INTO information_schema.\"LineRoutes\" (LineRouteID,RouteID,LineID) VALUES (%s,%s,%s);" ,(_+1,randint(1,routeNumber),randint(1,lineNumber)))
+    cur.execute("INSERT INTO \"LineRoutes\" (LineRouteID,RouteID,LineID) VALUES (%s,%s,%s);" ,(_+1,randint(1,routeNumber),randint(1,lineNumber)))
 print("LineRoutes added")
 for _ in range(scheduleNumber):
     fakeDate = fake.date_time_between(start_date='-5y', end_date='now')
@@ -137,16 +137,16 @@ for _ in range(scheduleNumber):
         arrival_time = departure_time - timedelta(minutes=randint(1, 5))
         
 
-    cur.execute("INSERT INTO information_schema.\"Schedule\" (ScheduleID,StopID, LineID, DepartureTime, ArrivalTime) VALUES (%s,%s,%s,%s,%s);" ,(_+1,randint(1,stopsNumber),randint(1,lineNumber), departure_time, arrival_time))
+    cur.execute("INSERT INTO \"Schedule\" (ScheduleID,StopID, LineID, DepartureTime, ArrivalTime) VALUES (%s,%s,%s,%s,%s);" ,(_+1,randint(1,stopsNumber),randint(1,lineNumber), departure_time, arrival_time))
 print("Schedules added")
 for _ in range(ticketNumber):
-    cur.execute("INSERT INTO information_schema.\"Ticket\" (TicketID,LineID,Price) VALUES (%s,%s,%s);" ,(_+1,randint(1,lineNumber),randint(1,100)+randint(1,99)/100))
+    cur.execute("INSERT INTO \"Ticket\" (TicketID,LineID,Price) VALUES (%s,%s,%s);" ,(_+1,randint(1,lineNumber),randint(1,100)+randint(1,99)/100))
 print("Tickets added")
 for _ in range(journeyNumber):
-    cur.execute("INSERT INTO information_schema.\"Journey\"(JourneyID,ScheduleID, TicketID, UserID) VALUES (%s,%s,%s,%s);" ,(_+1,randint(1,scheduleNumber),randint(1,ticketNumber),randint(1,userNumber)))
+    cur.execute("INSERT INTO \"Journey\"(JourneyID,ScheduleID, TicketID, UserID) VALUES (%s,%s,%s,%s);" ,(_+1,randint(1,scheduleNumber),randint(1,ticketNumber),randint(1,userNumber)))
 print("Journeys added")
 for _ in range(10000):
-    cur.execute("INSERT INTO information_schema.\"Transfer\"(TransferID,JourneyID, LineID, StopID, RouteID) VALUES (%s,%s,%s,%s,%s);" ,(_+1,randint(1,journeyNumber),randint(1,lineNumber),randint(1,stopsNumber),randint(1,routeNumber)))
+    cur.execute("INSERT INTO \"Transfer\"(TransferID,JourneyID, LineID, StopID, RouteID) VALUES (%s,%s,%s,%s,%s);" ,(_+1,randint(1,journeyNumber),randint(1,lineNumber),randint(1,stopsNumber),randint(1,routeNumber)))
 print("Transfers added")
 # for _ in range(100):  # You can adjust the number of rows you want to insert
 #     # Insert data into the UserType table
