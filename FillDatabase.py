@@ -7,7 +7,7 @@ import random
 # Database connection parameters
 db_params = {
     'host': 'localhost',
-    'database': 'Bazury',
+    'database': 'CleanBazury',
     'user': 'postgres',
     'password': 'Sianuga123'
 }
@@ -35,10 +35,10 @@ vehicleNumber = 3000
 routeNumber = 3000
 stopsNumber = 6000
 lineNumber = 200
-scheduleNumber = 50000
+scheduleNumber = 6000
 userNumber = 10000
-ticketNumber = 100000000
-journeyNumber = 100000000
+ticketNumber = 50000
+journeyNumber = 60000
 
 random.shuffle(vehicle_types)
 random.shuffle(user_type)
@@ -53,6 +53,7 @@ tables_to_clear = ["\"Vehicle\"", "\"User\"", "\"UserType\"", "\"Carriers\"", "\
 for table_name in tables_to_clear:
     # Use the DELETE statement to clear the table
     delete_query = f"DELETE FROM {table_name};"
+    print("Clearing table: " + table_name)
     cur.execute(delete_query)
 
 print("Cleared the tables")
@@ -140,9 +141,13 @@ for _ in range(scheduleNumber):
     cur.execute("INSERT INTO \"Schedule\" (ScheduleID,StopID, LineID, DepartureTime, ArrivalTime) VALUES (%s,%s,%s,%s,%s);" ,(_+1,randint(1,stopsNumber),randint(1,lineNumber), departure_time, arrival_time))
 print("Schedules added")
 for _ in range(ticketNumber):
+    if _%1000 == 0:
+        print(_)
     cur.execute("INSERT INTO \"Ticket\" (TicketID,LineID,Price) VALUES (%s,%s,%s);" ,(_+1,randint(1,lineNumber),randint(1,100)+randint(1,99)/100))
 print("Tickets added")
 for _ in range(journeyNumber):
+    if _%1000 == 0:
+        print(_)
     cur.execute("INSERT INTO \"Journey\"(JourneyID,ScheduleID, TicketID, UserID) VALUES (%s,%s,%s,%s);" ,(_+1,randint(1,scheduleNumber),randint(1,ticketNumber),randint(1,userNumber)))
 print("Journeys added")
 for _ in range(10000):
