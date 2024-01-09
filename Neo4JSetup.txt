@@ -1,0 +1,119 @@
+// Create Nodes
+CREATE (User1:User {UserID: 1, Username: 'user1', Email: 'user1@example.com', CreatedAt: '2021-01-01T00:00:00Z'}),
+       (User2:User {UserID: 2, Username: 'user2', Email: 'user2@example.com', CreatedAt: '2021-01-02T00:00:00Z'}),
+       (UserType1:UserType {UserTypeID: 1, Name: 'Regular'}),
+       (UserType1:UserType {UserTypeID: 2, Name: 'Admin'}),
+       (UserType1:UserType {UserTypeID: 3, Name: 'Moderator'}),
+       (Vehicle1:Vehicle {VehicleID: 1, RegistrationNumber: 'ABC123'}),
+       (Vehicle2:Vehicle {VehicleID: 2, RegistrationNumber: 'DEF456'}),
+       (VehicleType1:VehicleType {VehicleTypeID: 1, Name: 'Bus'}),
+       (VehicleType2:VehicleType {VehicleTypeID: 2, Name: 'Tram'}),
+       (VehicleType3:VehicleType {VehicleTypeID: 3, Name: 'Train'}),
+       (Carrier1:Carrier {CarrierID: 1, Name: 'Acme Transports'}),
+       (Carrier2:Carrier {CarrierID: 2, Name: 'I woke up in a new bugatti'}),
+       (Route1:Route {RouteID: 1, Name: 'Route 101', Description: 'Main route through the city'}),
+       (Route2:Route {RouteID: 2, Name: 'Route 102', Description: 'Tourist route'}),
+       (Route3:Route {RouteID: 3, Name: 'Route 103', Description: 'Route mainly for factory workers'}),
+       (Route3:Route {RouteID: 4, Name: 'Route 104', Description: 'A little bit of everything'}),
+       (Stop1:Stop {StopID: 1, Name: 'Downtown'}),
+       (Stop2:Stop {StopID: 2, Name: 'Center'}),
+       (Stop3:Stop {StopID: 3, Name: 'Market'}),
+       (Stop4:Stop {StopID: 4, Name: 'Suburbs'}),
+       (Obstacle1:Obstacle {ObstacleID: 1, Description: 'Construction'}),
+       (Obstacle2:Obstacle {ObstacleID: 2, Description: 'Bomb'}),
+       (Obstacle3:Obstacle {ObstacleID: 3, Description: 'Derailing'}),
+       (Line1:Line {LineID: 1, LineNumber: 10}),
+       (Line2:Line {LineID: 2, LineNumber: 2}),
+       (Line3:Line {LineID: 3, LineNumber: 12}),
+       (Line4:Line {LineID: 4, LineNumber: 22}),
+       (Ticket1:Ticket {TicketID: 1, Price: 2.50}),
+       (Ticket2:Ticket {TicketID: 2, Price: 5.00}),
+       (Ticket3:Ticket {TicketID: 3, Price: 12.50}),
+       (Ticket4:Ticket {TicketID: 4, Price: 7.50}),
+       (Ticket5:Ticket {TicketID: 5, Price: 5.50}),
+       (Ticket6:Ticket {TicketID: 6, Price: 5.00}),
+       (Ticket7:Ticket {TicketID: 7, Price: 2.50}),
+       (Ticket8:Ticket {TicketID: 8, Price: 5.00}),
+       (Ticket9:Ticket {TicketID: 9, Price: 2.50}),
+       (Ticket10:Ticket {TicketID: 10, Price: 2.50}),
+       (Schedule1:Schedule {ScheduleID: 1, DepartureTime: '2021-01-01T08:00:00Z', ArrivalTime: '2021-01-01T08:00:02Z'}),
+       (Schedule2:Schedule {ScheduleID: 2, DepartureTime: '2021-01-01T08:00:10Z', ArrivalTime: '2021-01-01T08:00:12Z'}),
+       (Schedule3:Schedule {ScheduleID: 3, DepartureTime: '2021-01-01T08:00:20Z', ArrivalTime: '2021-01-01T08:00:22Z'}),
+       (Schedule4:Schedule {ScheduleID: 4, DepartureTime: '2021-01-01T08:00:30Z', ArrivalTime: '2021-01-01T08:00:32Z'}),
+       (Schedule5:Schedule {ScheduleID: 5, DepartureTime: '2021-01-01T08:00:40Z', ArrivalTime: '2021-01-01T08:00:42Z'}),
+       (Schedule6:Schedule {ScheduleID: 6, DepartureTime: '2021-01-01T08:00:50Z', ArrivalTime: '2021-01-01T08:00:52Z'}),
+       (Schedule7:Schedule {ScheduleID: 7, DepartureTime: '2021-01-01T09:00:00Z', ArrivalTime: '2021-01-01T09:00:02Z'}),
+       (Schedule8:Schedule {ScheduleID: 8, DepartureTime: '2021-01-01T09:00:10Z', ArrivalTime: '2021-01-01T09:00:12Z'}),
+       (Schedule9:Schedule {ScheduleID: 9, DepartureTime: '2021-01-01T09:00:20Z', ArrivalTime: '2021-01-01T09:00:22Z'}),
+       (Schedule10:Schedule {ScheduleID: 10, DepartureTime: '2021-01-01T09:00:30Z', ArrivalTime: '2021-01-01T09:00:32Z'}),
+       (Schedule11:Schedule {ScheduleID: 11, DepartureTime: '2021-01-01T09:00:40Z', ArrivalTime: '2021-01-01T09:00:42Z'}),
+       (Journey1:Journey {JourneyID: 1}),
+       (Journey2:Journey {JourneyID: 2}),
+       (Amenity1:Amenity {AmenityID: 1, Name: 'WiFi'}),
+       (Amenity2:Amenity {AmenityID: 2, Name: 'Swimming Pool'}),
+       (Amenity3:Amenity {AmenityID: 3, Name: 'AC'}),
+       (Amenity4:Amenity {AmenityID: 4, Name: 'Disabled facilities'}),
+       (Amenity5:Amenity {AmenityID: 5, Name: 'Charging socket'}),
+       (Amenity6:Amenity {AmenityID: 6, Name: 'heating'}),
+       (Swap1:Swap {SwapID: 1}),
+       (Swap2:Swap {SwapID: 2}),
+       (Transfer1:Transfer {TransferID: 1});
+
+// Now create Relationships
+MATCH (a:User {UserID: 1}), (b:UserType {UserTypeID: 1})
+CREATE (a)-[:HAS_USER_TYPE]->(b);
+
+MATCH (c:Vehicle {VehicleID: 1}), (d:VehicleType {VehicleTypeID: 1})
+CREATE (c)-[:IS_OF_TYPE]->(d);
+
+MATCH (e:Vehicle {VehicleID: 1}), (f:Carrier {CarrierID: 1})
+CREATE (e)-[:OPERATED_BY]->(f);
+
+MATCH (g:Route {RouteID: 1}), (h:Stop {StopID: 1})
+CREATE (g)-[:INCLUDES]->(h);
+
+MATCH (i:Route {RouteID: 1}), (j:Obstacle {ObstacleID: 1})
+CREATE (i)-[:HAS_OBSTACLE]->(j);
+
+MATCH (k:Line {LineID: 1}), (l:Route {RouteID: 1})
+CREATE (k)-[:INCLUDES_ROUTE]->(l);
+
+MATCH (m:User {UserID: 1}), (n:Ticket {TicketID: 1})
+CREATE (m)-[:PURCHASED]->(n);
+
+MATCH (o:Journey {JourneyID: 1}), (p:Schedule {ScheduleID: 1})
+CREATE (o)-[:USES]->(p);
+
+MATCH (q:Journey {JourneyID: 1}), (r:User {UserID: 1})
+CREATE (q)-[:TAKEN_BY]->(r);
+
+MATCH (s:Vehicle {VehicleID: 1}), (t:Amenity {AmenityID: 1})
+CREATE (s)-[:HAS_AMENITY]->(t);
+
+MATCH (u:Vehicle {VehicleID: 1}), (v:Line {LineID: 1})
+CREATE (u)-[:HAS_COURSE {CourseID: 1}]->(v);
+
+MATCH (w:Ticket {TicketID: 1}), (x:Swap {SwapID: 1})
+CREATE (w)-[:HAS_SWAP]->(x);
+
+MATCH (y:Swap {SwapID: 1}), (z:Line {LineID: 1})
+CREATE (y)-[:HAS_ORIG_LINE]->(z);
+
+// Additional relationships for Transfer1, Line2, and Stop2
+MATCH (aa:Journey {JourneyID: 1}), (bb:Transfer {TransferID: 1})
+CREATE (aa)-[:HAS_TRANSFER]->(bb);
+
+MATCH (cc:Transfer {TransferID: 1}), (dd:Line {LineID: 1})
+CREATE (cc)-[:HAS_LINE]->(dd);
+
+MATCH (ee:Transfer {TransferID: 1}), (ff:Stop {StopID: 1})
+CREATE (ee)-[:HAS_STOP]->(ff);
+
+MATCH (gg:Transfer {TransferID: 1}), (hh:Route {RouteID: 1})
+CREATE (gg)-[:HAS_ROUTE]->(hh);
+
+MATCH (ii:Swap {SwapID: 1}), (jj:Line {LineID: 2})
+CREATE (ii)-[:HAS_NEW_LINE]->(jj);
+
+MATCH (kk:Swap {SwapID: 1}), (ll:Stop {StopID: 2})
+CREATE (kk)-[:HAS_MAX_STOP]->(ll);
