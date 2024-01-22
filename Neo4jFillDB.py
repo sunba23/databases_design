@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+import random
 from py2neo import Graph
 from py2neo.ogm import GraphObject, Property, RelatedTo, RelatedFrom
 from faker import Faker
@@ -163,6 +165,13 @@ def create_fake_data(graph, count=100):
         vehicle.RegistrationNumber = fake.license_plate()
         graph.push(vehicle)
 
+        # Create a VehicleType
+
+        vehicle_type = VehicleType()
+        vehicle_type.VehicleTypeID = i % 3 + 1  # Assuming three types for demonstration
+        vehicle_type.Name = fake.word()
+        graph.push(vehicle_type)
+
         # Create a UserType
         user_type = UserType()
         user_type.UserTypeID = i % 3 + 1  # Assuming three types for demonstration
@@ -241,183 +250,278 @@ def create_fake_data(graph, count=100):
 
         print(f"Created User, Vehicle, and UserType with ID {i}")
 
-# Function to create relationships
+# Function to create relationships with more randomness
 def create_user_user_type_relationship(graph, count=100):
+    all_users = list(User.match(graph))
+    all_user_types = list(UserType.match(graph))
+
     for i in range(count):
-        user = User.match(graph, i).first()
-        user_type = UserType.match(graph, i % 3 + 1).first()
-        user.user_type.add(user_type)
-        graph.push(user)
-        print(f"Created BELONGS_TO_TYPE relationship between User {i} and UserType {i % 3 + 1}")
+        selected_user = random.choice(all_users)
+        selected_user_type = random.choice(all_user_types)
+        selected_user.user_type.add(selected_user_type)
+        graph.push(selected_user)
+        print(f"Created BELONGS_TO_TYPE relationship between User {selected_user.UserID} and UserType {selected_user_type.UserTypeID}")
 
 def create_vehicle_vehicle_type_relationship(graph, count=100):
+    all_vehicles = list(Vehicle.match(graph))
+    all_vehicle_types = list(VehicleType.match(graph))
+
     for i in range(count):
-        vehicle = Vehicle.match(graph, i).first()
-        vehicle_type = VehicleType.match(graph, i % 3 + 1).first()
-        vehicle.vehicle_type.add(vehicle_type)
-        graph.push(vehicle)
-        print(f"Created IS_TYPE relationship between Vehicle {i} and VehicleType {i % 3 + 1}")
+        selected_vehicle = random.choice(all_vehicles)
+        selected_vehicle_type = random.choice(all_vehicle_types)
+        selected_vehicle.vehicle_type.add(selected_vehicle_type)
+        graph.push(selected_vehicle)
+        print(f"Created IS_TYPE relationship between Vehicle {selected_vehicle.VehicleID} and VehicleType {selected_vehicle_type.VehicleTypeID}")
 
 def create_vehicle_carrier_relationship(graph, count=100):
+    all_vehicles = list(Vehicle.match(graph))
+    all_carriers = list(Carrier.match(graph))
+
     for i in range(count):
-        vehicle = Vehicle.match(graph, i).first()
-        carrier = Carrier.match(graph, i).first()
-        vehicle.carrier.add(carrier)
-        graph.push(vehicle)
-        print(f"Created OPERATED_BY relationship between Vehicle {i} and Carrier {i}")
+        selected_vehicle = random.choice(all_vehicles)
+        selected_carrier = random.choice(all_carriers)
+        selected_vehicle.carrier.add(selected_carrier)
+        graph.push(selected_vehicle)
+        print(f"Created OPERATED_BY relationship between Vehicle {selected_vehicle.VehicleID} and Carrier {selected_carrier.CarrierID}")
 
 def create_vehicle_line_relationship(graph, count=100):
+    all_vehicles = list(Vehicle.match(graph))
+    all_lines = list(Line.match(graph))
+
     for i in range(count):
-        vehicle = Vehicle.match(graph, i).first()
-        line = Line.match(graph, i).first()
-        vehicle.line.add(line)
-        graph.push(vehicle)
-        print(f"Created HAS_COURSE relationship between Vehicle {i} and Line {i}")
+        selected_vehicle = random.choice(all_vehicles)
+        selected_line = random.choice(all_lines)
+        selected_vehicle.line.add(selected_line)
+        graph.push(selected_vehicle)
+        print(f"Created HAS_COURSE relationship between Vehicle {selected_vehicle.VehicleID} and Line {selected_line.LineID}")
 
 def create_amenity_vehicle_relationship(graph, count=100):
+    all_amenities = list(Amenity.match(graph))
+    all_vehicles = list(Vehicle.match(graph))
+
     for i in range(count):
-        amenity = Amenity.match(graph, i).first()
-        vehicle = Vehicle.match(graph, i).first()
-        amenity.vehicle.add(vehicle)
-        graph.push(amenity)
-        print(f"Created OFFERS relationship between Amenity {i} and Vehicle {i}")
+        selected_amenity = random.choice(all_amenities)
+        selected_vehicle = random.choice(all_vehicles)
+        selected_amenity.vehicle.add(selected_vehicle)
+        graph.push(selected_amenity)
+        print(f"Created OFFERS relationship between Amenity {selected_amenity.AmenityID} and Vehicle {selected_vehicle.VehicleID}")
 
 def create_journey_user_relationship(graph, count=100):
+    all_journeys = list(Journey.match(graph))
+    all_users = list(User.match(graph))
+
     for i in range(count):
-        journey = Journey.match(graph, i).first()
-        user = User.match(graph, i).first()
-        journey.user.add(user)
-        graph.push(journey)
-        print(f"Created TAKEN_BY relationship between Journey {i} and User {i}")
+        selected_journey = random.choice(all_journeys)
+        selected_user = random.choice(all_users)
+        selected_journey.user.add(selected_user)
+        graph.push(selected_journey)
+        print(f"Created TAKEN_BY relationship between Journey {selected_journey.JourneyID} and User {selected_user.UserID}")
 
 def create_journey_schedule_relationship(graph, count=100):
+    all_journeys = list(Journey.match(graph))
+    all_schedules = list(Schedule.match(graph))
+
     for i in range(count):
-        journey = Journey.match(graph, i).first()
-        schedule = Schedule.match(graph, i).first()
-        journey.schedule.add(schedule)
-        graph.push(journey)
-        print(f"Created FOLLOWS_SCHEDULE relationship between Journey {i} and Schedule {i}")
+        selected_journey = random.choice(all_journeys)
+        selected_schedule = random.choice(all_schedules)
+        selected_journey.schedule.add(selected_schedule)
+        graph.push(selected_journey)
+        print(f"Created FOLLOWS_SCHEDULE relationship between Journey {selected_journey.JourneyID} and Schedule {selected_schedule.ScheduleID}")
 
 def create_journey_transfer_relationship(graph, count=100):
+    all_journeys = list(Journey.match(graph))
+    all_transfers = list(Transfer.match(graph))
+
     for i in range(count):
-        journey = Journey.match(graph, i).first()
-        transfer = Transfer.match(graph, i).first()
-        journey.transfer.add(transfer)
-        graph.push(journey)
-        print(f"Created HAS_TRANSFER relationship between Journey {i} and Transfer {i}")
+        selected_journey = random.choice(all_journeys)
+        selected_transfer = random.choice(all_transfers)
+        selected_journey.transfer.add(selected_transfer)
+        graph.push(selected_journey)
+        print(f"Created HAS_TRANSFER relationship between Journey {selected_journey.JourneyID} and Transfer {selected_transfer.TransferID}")
 
 def create_line_transfer_relationship(graph, count=100):
+    all_lines = list(Line.match(graph))
+    all_transfers = list(Transfer.match(graph))
+
     for i in range(count):
-        line = Line.match(graph, i).first()
-        transfer = Transfer.match(graph, i).first()
-        line.transfer.add(transfer)
-        graph.push(line)
-        print(f"Created CONNECTS_LINE relationship between Line {i} and Transfer {i}")
+        selected_line = random.choice(all_lines)
+        selected_transfer = random.choice(all_transfers)
+        selected_line.transfer.add(selected_transfer)
+        graph.push(selected_line)
+        print(f"Created CONNECTS_LINE relationship between Line {selected_line.LineID} and Transfer {selected_transfer.TransferID}")
 
 def create_line_route_relationship(graph, count=100):
+    all_lines = list(Line.match(graph))
+    all_routes = list(Route.match(graph))
+
     for i in range(count):
-        line = Line.match(graph, i).first()
-        route = Route.match(graph, i).first()
-        line.route.add(route)
-        graph.push(line)
-        print(f"Created FOLLOWS relationship between Line {i} and Route {i}")
+        selected_line = random.choice(all_lines)
+        selected_route = random.choice(all_routes)
+        selected_line.route.add(selected_route)
+        graph.push(selected_line)
+        print(f"Created FOLLOWS relationship between Line {selected_line.LineID} and Route {selected_route.RouteID}")
 
 def create_line_vehicle_relationship(graph, count=100):
+    all_lines = list(Line.match(graph))
+    all_vehicles = list(Vehicle.match(graph))
+
     for i in range(count):
-        line = Line.match(graph, i).first()
-        vehicle = Vehicle.match(graph, i).first()
-        line.vehicle.add(vehicle)
-        graph.push(line)
-        print(f"Created HAS_COURSE relationship between Line {i} and Vehicle {i}")
+        selected_line = random.choice(all_lines)
+        selected_vehicle = random.choice(all_vehicles)
+        selected_line.vehicle.add(selected_vehicle)
+        graph.push(selected_line)
+        print(f"Created HAS_COURSE relationship between Line {selected_line.LineID} and Vehicle {selected_vehicle.VehicleID}")
 
 def create_line_swap_relationships(graph, count=100):
+    all_lines = list(Line.match(graph))
+    all_swaps = list(Swap.match(graph))
+
     for i in range(count):
-        line = Line.match(graph, i).first()
-        swap_max = Swap.match(graph, i).first()
-        swap_min = Swap.match(graph, i).first()
-        swap_origin = Swap.match(graph, i).first()
-        swap_new = Swap.match(graph, i).first()
+        selected_line = random.choice(all_lines)
+        selected_swap_max = random.choice(all_swaps)
+        selected_swap_min = random.choice(all_swaps)
+        selected_swap_origin = random.choice(all_swaps)
+        selected_swap_new = random.choice(all_swaps)
 
-        line.swapMax.add(swap_max)
-        line.swapMin.add(swap_min)
-        line.swap.add(swap_origin)
-        line.newSwap.add(swap_new)
+        selected_line.swapMax.add(selected_swap_max)
+        selected_line.swapMin.add(selected_swap_min)
+        selected_line.swap.add(selected_swap_origin)
+        selected_line.newSwap.add(selected_swap_new)
 
-        graph.push(line)
-        print(f"Created HAS_MAX_STOP, HAS_MIN_STOP, HAS_ORIGIN_LINE, and HAS_NEW_LINE relationships for Line {i}")
+        graph.push(selected_line)
+        print(f"Created HAS_MAX_STOP, HAS_MIN_STOP, HAS_ORIGIN_LINE, and HAS_NEW_LINE relationships for Line {selected_line.LineID}")
+
 
 def create_obstacle_route_relationship(graph, count=100):
+    all_obstacles = list(Obstacle.match(graph))
+    all_routes = list(Route.match(graph))
+
     for i in range(count):
-        obstacle = Obstacle.match(graph, i).first()
-        route = Route.match(graph, i).first()
-        route.obstacle.add(obstacle)
-        graph.push(route)
-        print(f"Created FACES_OBSTACLE relationship between Route {i} and Obstacle {i}")
+        selected_obstacle = random.choice(all_obstacles)
+        selected_route = random.choice(all_routes)
+        selected_route.obstacle.add(selected_obstacle)
+        graph.push(selected_route)
+        print(f"Created FACES_OBSTACLE relationship between Route {selected_route.RouteID} and Obstacle {selected_obstacle.ObstacleID}")
 
 def create_route_transfer_relationship(graph, count=100):
+    all_routes = list(Route.match(graph))
+    all_transfers = list(Transfer.match(graph))
+
     for i in range(count):
-        route = Route.match(graph, i).first()
-        transfer = Transfer.match(graph, i).first()
-        route.transfer.add(transfer)
-        graph.push(route)
-        print(f"Created CONNECTS_ROUTE relationship between Route {i} and Transfer {i}")
+        selected_route = random.choice(all_routes)
+        selected_transfer = random.choice(all_transfers)
+        selected_route.transfer.add(selected_transfer)
+        graph.push(selected_route)
+        print(f"Created CONNECTS_ROUTE relationship between Route {selected_route.RouteID} and Transfer {selected_transfer.TransferID}")
 
 def create_route_stop_relationship(graph, count=100):
+    all_routes = list(Route.match(graph))
+    all_stops = list(Stop.match(graph))
+
     for i in range(count):
-        route = Route.match(graph, i).first()
-        stop = Stop.match(graph, i).first()
-        route.stop.add(stop)
-        graph.push(route)
-        print(f"Created STOPS_AT relationship between Route {i} and Stop {i}")
+        selected_route = random.choice(all_routes)
+        selected_stop = random.choice(all_stops)
+        selected_route.stop.add(selected_stop)
+        graph.push(selected_route)
+        print(f"Created STOPS_AT relationship between Route {selected_route.RouteID} and Stop {selected_stop.StopID}")
 
 def create_schedule_journey_relationship(graph, count=100):
+    all_schedules = list(Schedule.match(graph))
+    all_journeys = list(Journey.match(graph))
+
     for i in range(count):
-        schedule = Schedule.match(graph, i).first()
-        journey = Journey.match(graph, i).first()
-        schedule.journey.add(journey)
-        graph.push(schedule)
-        print(f"Created FOLLOWS_SCHEDULE relationship between Schedule {i} and Journey {i}")
+        selected_schedule = random.choice(all_schedules)
+        selected_journey = random.choice(all_journeys)
+        selected_schedule.journey.add(selected_journey)
+        graph.push(selected_schedule)
+        print(f"Created FOLLOWS_SCHEDULE relationship between Schedule {selected_schedule.ScheduleID} and Journey {selected_journey.JourneyID}")
 
 def create_stop_transfer_relationship(graph, count=100):
+    all_stops = list(Stop.match(graph))
+    all_transfers = list(Transfer.match(graph))
+
     for i in range(count):
-        stop = Stop.match(graph, i).first()
-        transfer = Transfer.match(graph, i).first()
-        stop.transfer.add(transfer)
-        graph.push(stop)
-        print(f"Created CONNECTS_STOP relationship between Stop {i} and Transfer {i}")
+        selected_stop = random.choice(all_stops)
+        selected_transfer = random.choice(all_transfers)
+        selected_stop.transfer.add(selected_transfer)
+        graph.push(selected_stop)
+        print(f"Created CONNECTS_STOP relationship between Stop {selected_stop.StopID} and Transfer {selected_transfer.TransferID}")
 
 def create_swap_ticket_relationship(graph, count=100):
+    all_swaps = list(Swap.match(graph))
+    all_tickets = list(Ticket.match(graph))
+
     for i in range(count):
-        swap = Swap.match(graph, i).first()
-        ticket = Ticket.match(graph, i).first()
-        swap.ticket.add(ticket)
-        graph.push(swap)
-        print(f"Created ELIGIBLE_FOR relationship between Swap {i} and Ticket {i}")
+        selected_swap = random.choice(all_swaps)
+        selected_ticket = random.choice(all_tickets)
+        selected_swap.ticket.add(selected_ticket)
+        graph.push(selected_swap)
+        print(f"Created ELIGIBLE_FOR relationship between Swap {selected_swap.SwapID} and Ticket {selected_ticket.TicketID}")
 
 def create_ticket_user_relationship(graph, count=100):
+    all_tickets = list(Ticket.match(graph))
+    all_users = list(User.match(graph))
+
     for i in range(count):
-        ticket = Ticket.match(graph, i).first()
-        user = User.match(graph, i).first()
-        ticket.user.add(user)
-        graph.push(ticket)
-        print(f"Created PURCHASED_BY relationship between Ticket {i} and User {i}")
+        selected_ticket = random.choice(all_tickets)
+        selected_user = random.choice(all_users)
+        selected_ticket.user.add(selected_user)
+        graph.push(selected_ticket)
+        print(f"Created PURCHASED_BY relationship between Ticket {selected_ticket.TicketID} and User {selected_user.UserID}")
 
 def create_transfer_line_relationship(graph, count=100):
+    all_transfers = list(Transfer.match(graph))
+    all_lines = list(Line.match(graph))
+
     for i in range(count):
-        transfer = Transfer.match(graph, i).first()
-        line = Line.match(graph, i).first()
-        transfer.line.add(line)
-        graph.push(transfer)
-        print(f"Created CONNECTS_LINE relationship between Transfer {i} and Line {i}")
+        selected_transfer = random.choice(all_transfers)
+        selected_line = random.choice(all_lines)
+        selected_transfer.line.add(selected_line)
+        graph.push(selected_transfer)
+        print(f"Created CONNECTS_LINE relationship between Transfer {selected_transfer.TransferID} and Line {selected_line.LineID}")
 
 def create_transfer_route_relationship(graph, count=100):
+    all_transfers = list(Transfer.match(graph))
+    all_routes = list(Route.match(graph))
+
     for i in range(count):
-        transfer = Transfer.match(graph, i).first()
-        route = Route.match(graph, i).first()
-        transfer.route.add(route)
-        graph.push(transfer)
-        print(f"Created CONNECTS_ROUTE relationship between Transfer {i} and Route {i}")
+        selected_transfer = random.choice(all_transfers)
+        selected_route = random.choice(all_routes)
+        selected_transfer.route.add(selected_route)
+        graph.push(selected_transfer)
+        print(f"Created CONNECTS_ROUTE relationship between Transfer {selected_transfer.TransferID} and Route {selected_route.RouteID}")
+
+def create_schedule_stop_relationship(graph,count=100):
+    all_schedules = list(Schedule.match(graph))
+    all_stops = list(Stop.match(graph))
+
+    for i in range(count):
+        selected_schedule = random.choice(all_schedules)
+        selected_stop = random.choice(all_stops)
+        selected_schedule.stop.add(selected_stop)
+        graph.push(selected_schedule)
+        print(f"Created STOPS_AT relationship between Schedule {selected_schedule.ScheduleID} and Stop {selected_stop.StopID}")
 
 # Example usage
 create_fake_data(graph, 100)
 create_user_user_type_relationship(graph, 100)
+create_vehicle_vehicle_type_relationship(graph, 100)
+create_vehicle_carrier_relationship(graph, 100)
+create_vehicle_line_relationship(graph, 100)
+create_amenity_vehicle_relationship(graph, 100)
+create_journey_user_relationship(graph, 100)
+create_journey_schedule_relationship(graph, 100)
+create_journey_transfer_relationship(graph, 100)
+create_line_transfer_relationship(graph, 100)
+create_line_route_relationship(graph, 100)
+create_line_vehicle_relationship(graph, 100)
+create_line_swap_relationships(graph, 100)
+create_obstacle_route_relationship(graph, 100)
+create_route_transfer_relationship(graph, 100)
+create_route_stop_relationship(graph, 100)
+create_schedule_journey_relationship(graph, 100)
+create_stop_transfer_relationship(graph, 100)
+create_swap_ticket_relationship(graph, 100)
+create_ticket_user_relationship(graph, 100)
+create_transfer_line_relationship(graph, 100)
+create_transfer_route_relationship(graph, 100)
